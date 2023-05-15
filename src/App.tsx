@@ -1,7 +1,9 @@
-import { FormikForm } from './pages/Formik'
-import { JoiForm } from './pages/Joi'
-import { YupForm } from './pages/Yup'
-import { ZodForm } from './pages/Zod'
+import { FormikJoi } from './pages/FormikJoi'
+import { FormikYup } from './pages/FormikYup'
+import { FormikZod } from './pages/FormkiZod'
+import { HookFormJoi } from './pages/HookFormJoi'
+import { HookFormYup } from './pages/HookFormYup'
+import { HookFormZod } from './pages/HookFormZod'
 import { Toaster } from 'react-hot-toast'
 
 function App() {
@@ -10,7 +12,9 @@ function App() {
       {/* <ZodForm /> */}
       {/* <YupForm /> */}
       {/* <JoiForm /> */}
-      <FormikForm />
+      {/* <FormikYup /> */}
+      {/* <FormikZod /> */}
+      <FormikJoi />
       <Toaster
         position="bottom-left"
         reverseOrder={false}

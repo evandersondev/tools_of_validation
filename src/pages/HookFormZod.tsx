@@ -1,25 +1,43 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, FormProvider } from 'react-hook-form'
-import { Form } from '../components/Form'
-import Joi from 'joi'
-import { joiResolver } from '@hookform/resolvers/joi'
+import { z } from 'zod'
+import toast from 'react-hot-toast'
 import { Toast } from '../components/Toast'
-import { toast } from 'react-hot-toast'
+import { Form } from '../components/Form'
 
-const createUserFormSchema = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string().required(),
-  password: Joi.string().required(),
+const createUserFormSchema = z.object({
+  name: z
+    .string()
+    .nonempty('O nome é obrigatório')
+    .transform((name) => {
+      return name
+        .trim()
+        .toLowerCase()
+        .split(' ')
+        .map((word) => {
+          return word[0].toUpperCase().concat(word.substring(1))
+        })
+        .join(' ')
+    }),
+  email: z
+    .string()
+    .nonempty('O e-mail é obrigatório')
+    .email('Formato de e-mail inválido')
+    .refine(
+      (email) => email.endsWith('@ngi.com.br'),
+      'O email precisa ser da NGI (@ngi.com.br)',
+    ),
+  password: z
+    .string()
+    .nonempty('A senha é obrigatória')
+    .min(6, 'A senha precisa de no minimo 6 caracteres'),
 })
 
-interface CreateUserFormData {
-  name: string
-  email: string
-  password: string
-}
+type CreateFormUserData = z.infer<typeof createUserFormSchema>
 
-export function JoiForm() {
-  const createUserForm = useForm<CreateUserFormData>({
-    resolver: joiResolver(createUserFormSchema),
+export function HookFormZod() {
+  const createUserForm = useForm<CreateFormUserData>({
+    resolver: zodResolver(createUserFormSchema),
   })
 
   const {
@@ -27,7 +45,7 @@ export function JoiForm() {
     formState: { isSubmitting },
   } = createUserForm
 
-  function handleCreateUser({ name, email, password }: CreateUserFormData) {
+  function handleCreateUser({ name, email, password }: CreateFormUserData) {
     toast.custom((t) => Toast({ name, email, password, isOpen: t.visible }))
   }
 
@@ -35,7 +53,7 @@ export function JoiForm() {
     <>
       <main className="h-screen bg-zinc-950 text-zinc-300 flex flex-col gap-10 items-center justify-center">
         <h2 className="font-bold text-4xl text-zinc-50 text-center">
-          Joi Form
+          HookForm + Zod
         </h2>
 
         <FormProvider {...createUserForm}>

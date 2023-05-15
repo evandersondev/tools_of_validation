@@ -34,7 +34,7 @@ const createUserFormSchema = yup.object().shape({
 
 type CreateUserFormData = yup.InferType<typeof createUserFormSchema>
 
-export function YupForm() {
+export function HookFormYup() {
   const createUserForm = useForm<CreateUserFormData>({
     resolver: yupResolver(createUserFormSchema),
   })
@@ -52,7 +52,7 @@ export function YupForm() {
     <>
       <main className="h-screen bg-zinc-950 text-zinc-300 flex flex-col gap-10 items-center justify-center">
         <h2 className="font-bold text-4xl text-zinc-50 text-center">
-          Yup Form
+          HookForm + Yup
         </h2>
 
         <FormProvider {...createUserForm}>

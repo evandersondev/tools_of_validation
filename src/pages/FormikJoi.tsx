@@ -1,38 +1,21 @@
 import { useFormik, FormikHelpers } from 'formik'
 import { toast } from 'react-hot-toast'
-import * as yup from 'yup'
+import Joi from 'joi'
 import { Toast } from '../components/Toast'
 
-const createUserFormSchema = yup.object().shape({
-  name: yup
-    .string()
-    .required('O nome é obrigatório')
-    .transform((name) => {
-      return name
-        .trim()
-        .toLowerCase()
-        .split(' ')
-        .map((word: string) => {
-          return word[0].toUpperCase().concat(word.substring(1))
-        })
-        .join(' ')
-    }),
-  email: yup
-    .string()
-    .required('O email é obrigatório')
-    .email('Insira um email inválido')
-    .test('email', 'O email precisa ser da NGI (@ngi.com.br)', (email) =>
-      email.endsWith('@ngi.com.br'),
-    ),
-  password: yup
-    .string()
-    .required('A senha é obrigatória')
-    .min(6, 'A senha precisa de no minimo 6 caracteres'),
+const createUserFormSchema = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.string().required(),
+  password: Joi.string().required(),
 })
 
-type CreateUserFormData = yup.InferType<typeof createUserFormSchema>
+interface CreateUserFormData {
+  name: string
+  email: string
+  password: string
+}
 
-export function FormikForm() {
+export function FormikJoi() {
   const { values, handleSubmit, handleChange, errors, touched, isSubmitting } =
     useFormik({
       initialValues: {
@@ -55,7 +38,7 @@ export function FormikForm() {
   return (
     <main className="h-screen bg-zinc-950 text-zinc-300 flex flex-col gap-10 items-center justify-center">
       <h2 className="font-bold text-4xl text-zinc-50 text-center">
-        Formik Form
+        Formik + Joi
       </h2>
 
       <form
